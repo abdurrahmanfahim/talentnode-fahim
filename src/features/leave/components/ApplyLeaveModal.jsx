@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { format } from 'date-fns'
-import { CalendarIcon, SendIcon } from 'lucide-react'
+import { CalendarIcon, SendIcon, TagIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -27,10 +27,10 @@ const schema = z.object({
 const DatePicker = ({ value, onChange, placeholder, disabled }) => (
   <Popover>
     <PopoverTrigger asChild>
-      <Button variant="outline" className={cn('w-full justify-start font-normal', !value && 'text-muted-foreground')} disabled={disabled}>
-        <CalendarIcon className="size-4 mr-2" />
+      <button type="button" disabled={disabled} className={cn('h-[42px] w-full flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-4 font-outfit text-sm transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50', !value ? 'text-[#90A1B9]' : 'text-foreground')}>
+        <CalendarIcon className="size-4 shrink-0" />
         {value ? format(value, 'dd MMM yyyy') : placeholder}
-      </Button>
+      </button>
     </PopoverTrigger>
     <PopoverContent className="w-auto p-0" align="start">
       <Calendar mode="single" selected={value} onSelect={onChange} initialFocus />
@@ -74,7 +74,7 @@ const ApplyLeaveModal = ({ open, onOpenChange }) => {
             {/* Leave Type */}
             <FormField control={form.control} name="type" render={({ field }) => (
               <FormItem>
-                <FormLabel>Leave Type</FormLabel>
+                <FormLabel><TagIcon className="inline size-3.5 mr-1 mb-0.5" />Leave Type</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
@@ -92,25 +92,22 @@ const ApplyLeaveModal = ({ open, onOpenChange }) => {
             )} />
 
             {/* Duration */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <p className="text-sm font-medium flex items-center gap-1"><CalendarIcon className="size-3.5" />Duration</p>
+              <div className="grid grid-cols-2 gap-3">
               <FormField control={form.control} name="fromDate" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>From</FormLabel>
-                  <FormControl>
-                    <DatePicker value={field.value} onChange={field.onChange} placeholder="dd MMM yyyy" />
-                  </FormControl>
+                <div className="flex flex-col gap-2">
+                  <DatePicker value={field.value} onChange={field.onChange} placeholder="From" />
                   <FormMessage />
-                </FormItem>
+                </div>
               )} />
               <FormField control={form.control} name="toDate" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>To</FormLabel>
-                  <FormControl>
-                    <DatePicker value={field.value} onChange={field.onChange} placeholder="dd MMM yyyy" disabled={!form.watch('fromDate')} />
-                  </FormControl>
+                <div className="flex flex-col gap-2">
+                  <DatePicker value={field.value} onChange={field.onChange} placeholder="To" disabled={!form.watch('fromDate')} />
                   <FormMessage />
-                </FormItem>
+                </div>
               )} />
+            </div>
             </div>
 
             {/* Reason */}
