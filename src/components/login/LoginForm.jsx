@@ -2,47 +2,39 @@ import { Link, useNavigate } from "react-router-dom"
 import LoginLeft from "./LoginLeft"
 import { ArrowLeftIcon, EyeOffIcon, EyeIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useAuth } from "@/context/AuthContext";
 import { dummyAdminDashboardData, dummyEmployeeDashboardData } from "@/dummyData";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+})
 
 const LoginForm = ({ role, title, subtitle }) => {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const [formData, setFormData] = useState({
-    email: role === 'admin' ? 'admin@example.com' : 'johndoe@example.com',
-    password: '123456',
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: role === 'admin' ? 'admin@example.com' : 'johndoe@example.com',
+      password: '123456',
+    }
+  })
 
-  const [status, setStatus] = useState({
-    loading: false,
-    error: "",
-    showPassword: false
-  });
-
-  // ========= Input handler func =========
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  // ========= Password hide/show func =========
-  const handleShowPassword = () => {
-    setStatus((prev) => ({ ...prev, showPassword: !prev.showPassword }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus(p => ({ ...p, loading: true, error: '' }))
+  const onSubmit = async () => {
+    setLoading(true)
     await new Promise(r => setTimeout(r, 600))
     const userData = role === 'admin' ? dummyAdminDashboardData : dummyEmployeeDashboardData
     login(role.toUpperCase(), userData)
-    setStatus(p => ({ ...p, loading: false }))
+    setLoading(false)
     navigate(role === 'admin' ? '/admin/dashboard' : '/employee/dashboard')
   }
-
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -64,58 +56,44 @@ const LoginForm = ({ role, title, subtitle }) => {
             <p className="text-sm sm:text-base mt-2 text-gray-600">{subtitle}</p>
           </div>
 
-          {/* ========== Error State ========== */}
-          {status.error && (
-            <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm rounded-xl flex items-start gap-3">
-              <div className="size-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-              {status.error}
-            </div>
-          )}
-
           {/* ========== Form ========== */}
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
 
             {/* ========== Email input ========== */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">Email address</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
+                {...register("email")}
                 className="border border-gray-300 focus:outline-brand-accent rounded-sm p-2.5 w-full"
                 placeholder="john@example.com" />
+              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
             </div>
 
             {/* ========== Password input ========== */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="password">Password</label>
               <div className="relative">
-
                 <input
-                  type={status.showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="border border-gray-300 focus:outline-brand-accent rounded-sm p-2.5 w-full placeholder:translate-y-1 pr-11" placeholder="********" />
-
+                  type={showPassword ? 'text' : 'password'}
+                  {...register("password")}
+                  className="border border-gray-300 focus:outline-brand-accent rounded-sm p-2.5 w-full placeholder:translate-y-1 pr-11"
+                  placeholder="********" />
                 <button
                   type="button"
-                  onClick={handleShowPassword}
+                  onClick={() => setShowPassword(p => !p)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
-                  {status.showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                  {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
                 </button>
-
               </div>
+              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
             </div>
 
             {/* ========== Submit btn ========== */}
             <button type="submit"
-              disabled={status.loading}
+              disabled={loading}
               className="w-full py-3 bg-surface-dark text-white rounded-md text-sm font-semibold hover:bg-surface-dark/90 disabled:opacity-50 transition-colors flex justify-center items-center cursor-pointer">
-              {status.loading ? <Loader2Icon className='animate-spin size-4 mr-2' /> : 'Log in'}
+              {loading ? <Loader2Icon className='animate-spin size-4 mr-2' /> : 'Log in'}
             </button>
 
           </form>

@@ -18,6 +18,7 @@ import EmployeeSettings from '@/pages/employee/EmployeeSettings'
 import AdminDashboard from '@/pages/admin/AdminDashboard'
 import AdminEmployees from '@/pages/admin/Employees'
 import AdminLeave from '@/pages/admin/AdminLeave'
+import AdminPayslips from '@/pages/admin/AdminPayslips'
 import AdminSettings from '@/pages/admin/AdminSettings'
 
 const RootRedirect = () => {
@@ -48,7 +49,7 @@ function App() {
           <Route path="/admin/dashboard"  element={<AdminDashboard />} />
           <Route path="/admin/employees"  element={<AdminEmployees />} />
           <Route path="/admin/leave"      element={<AdminLeave />} />
-          <Route path="/admin/payslips"   element={<EmployeePayslip />} />
+          <Route path="/admin/payslips"   element={<AdminPayslips />} />
           <Route path="/admin/settings"   element={<AdminSettings />} />
         </Route>
 

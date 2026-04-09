@@ -19,7 +19,7 @@ const Payslip = () => (
         <p className="font-outfit text-base font-semibold text-[#0F172B]">Payslip History</p>
       </div>
       <CardContent className="p-0">
-        <Table>
+        <Table className="w-full">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               {['Period', 'Basic Salary', 'Net Salary', 'Actions'].map(h => (

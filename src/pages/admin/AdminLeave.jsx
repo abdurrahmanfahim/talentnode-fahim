@@ -70,7 +70,7 @@ const AdminLeave = () => {
       </div>
       <CardContent className="p-0">
         <ScrollArea>
-          <Table>
+          <Table className="w-full">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 {['Employee', 'Type', 'Dates', 'Reason', 'Status', 'Action'].map(h => (

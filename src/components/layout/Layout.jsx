@@ -11,7 +11,7 @@ const Layout = () => {
 
       {/* ========= Children ========= */}
       <main className="flex-1 overflow-y-auto bg-background">
-        <div className="p-6 pt-16 lg:pt-8 max-w-5xl mx-auto">
+        <div className="p-6 pt-16 lg:pt-8 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>

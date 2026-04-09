@@ -51,7 +51,7 @@ const Leave = () => {
         </div>
         <CardContent className="p-0">
           <ScrollArea>
-            <Table>
+            <Table className="w-full">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   {['Type', 'Dates', 'Reason', 'Status'].map(h => (
