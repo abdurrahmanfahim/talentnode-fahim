@@ -15,7 +15,7 @@ const Dashboard = () => (
       <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Overview</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statCards.map(({ title, value, icon: Icon }) => (
-          <Card key={title} className="shadow-none">
+          <Card key={title} className="border border-[rgba(226,232,240,0.7)] shadow-none py-0">
             <CardContent className="flex items-center gap-4 p-5">
               <div className="size-10 rounded-lg bg-brand-muted flex items-center justify-center shrink-0">
                 <Icon className="size-4 text-brand" />
