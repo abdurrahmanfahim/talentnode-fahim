@@ -76,7 +76,7 @@ export const createEmployee = async (req, res) => {
       bio: bio || "",
     });
 
-    return res.status(201 ).json({ success: true, employee })
+    return res.status(201).json({ success: true, employee });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(409).json({ error: "Email already exists" });
@@ -88,8 +88,76 @@ export const createEmployee = async (req, res) => {
 
 // Update Employee
 // PUT /api/v1/employee/:id
-export const updateEmployee = async (req, res) => {};
+export const updateEmployee = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      position,
+      department,
+      basicSalary,
+      allowances,
+      deductions,
+      employmentStatus,
+      password,
+      role,
+      bio,
+    } = req.body;
+
+    const { id } = req.params;
+
+    const employee = await Employee.findById(id);
+    if (!employee) return res.status(404).json({ error: "Employee not found" });
+
+    await Employee.findByIdAndUpdate(id, {
+      firstName,
+      lastName,
+      email,
+      phone,
+      position,
+      department: department || "Engineering",
+      basicSalary: Number(basicSalary) || 0,
+      allowances: Number(allowances) || 0,
+      deductions: Number(deductions) || 0,
+      employmentStatus: employmentStatus || "ACTIVE",
+      bio: bio || "",
+    });
+
+    // Update user record
+    const userUpdate = { email };
+    if (role) userUpdate.role = role;
+    if (password) userUpdate.password = await bcrypt.hash(password, 12);
+    await User.findOneAndUpdate(employee.userId, userUpdate);
+
+    return res.json({ success: true });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ error: "Email already exists" });
+    }
+    console.error("Error while creating employee:", error.message);
+    return res.status(500).json({ error: "Failed to create employee" });
+  }
+};
 
 // Delete Employee
 // DELETE /api/v1/employee/:id
-export const deleteEmployee = async (req, res) => {};
+export const deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const employee = await Employee.findById(id);
+    if (!employee) return res.status(404).json({ error: "Employee not found" });
+
+    employee.isDeleted = true;
+    employee.employmentStatus = "INACTIVE";
+
+    await employee.save();
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.log({ error: "Failed to delete employee" });
+    return res.status(500).json({ error: "Failed to delete employee" });
+  }
+};
