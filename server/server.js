@@ -12,6 +12,7 @@ import employeeRouter from "./routes/employeeRoutes.js";
 import profileRouter from "./routes/profileRoutes.js";
 import attendanceRouter from "./routes/attendance.js";
 import leaveRouter from "./routes/leaveRoutes.js";
+import payslipRouter from "./routes/payslipRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use("/api/v1/employees", employeeRouter)
 app.use("/api/v1/profile", profileRouter)
 app.use("/api/v1/attendance", attendanceRouter)
 app.use("/api/v1/leave", leaveRouter)
+app.use("/api/v1/payslip", payslipRouter)
 
 // Connect to MongoDB
 connectDB();
