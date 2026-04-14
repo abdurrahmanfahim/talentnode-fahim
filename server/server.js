@@ -1,6 +1,10 @@
+import dns from "dns";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+
+dns.setDefaultResultOrder("ipv4first");
+dns.setServers(["1.1.1.1", "1.0.0.1"]);
 import multer from "multer";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
