@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 
 import Layout from '@/components/layout/Layout'
+import ProtectedRoute from '@/components/layout/ProtectedRoute'
 import Login from '@/pages/Login'
 import LoginForm from '@/components/login/LoginForm'
 import NotFound from '@/pages/NotFound'
@@ -37,22 +38,26 @@ function App() {
         <Route path="/login/employee" element={<LoginForm role="employee" title="Employee Portal" subtitle="Sign in to access your workspace" />} />
 
         {/* Employee routes */}
-        <Route element={<Layout />}>
-          <Route path="/employee/dashboard"  element={<EmployeeDashboard />} />
-          <Route path="/employee/attendance" element={<EmployeeAttendance />} />
-          <Route path="/employee/leave"      element={<EmployeeLeave />} />
-          <Route path="/employee/payslips"   element={<EmployeePayslip />} />
-          <Route path="/employee/settings"   element={<EmployeeSettings />} />
+        <Route element={<ProtectedRoute allowedRole="EMPLOYEE" />}>
+          <Route element={<Layout />}>
+            <Route path="/employee/dashboard"  element={<EmployeeDashboard />} />
+            <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+            <Route path="/employee/leave"      element={<EmployeeLeave />} />
+            <Route path="/employee/payslips"   element={<EmployeePayslip />} />
+            <Route path="/employee/settings"   element={<EmployeeSettings />} />
+          </Route>
         </Route>
 
         {/* Admin routes */}
-        <Route element={<Layout />}>
-          <Route path="/admin/dashboard"  element={<AdminDashboard />} />
-          <Route path="/admin/employees"  element={<AdminEmployees />} />
-          <Route path="/admin/attendance" element={<AdminAttendance />} />
-          <Route path="/admin/leave"      element={<AdminLeave />} />
-          <Route path="/admin/payslips"   element={<AdminPayslips />} />
-          <Route path="/admin/settings"   element={<AdminSettings />} />
+        <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
+          <Route element={<Layout />}>
+            <Route path="/admin/dashboard"  element={<AdminDashboard />} />
+            <Route path="/admin/employees"  element={<AdminEmployees />} />
+            <Route path="/admin/attendance" element={<AdminAttendance />} />
+            <Route path="/admin/leave"      element={<AdminLeave />} />
+            <Route path="/admin/payslips"   element={<AdminPayslips />} />
+            <Route path="/admin/settings"   element={<AdminSettings />} />
+          </Route>
         </Route>
 
         <Route path="/print/payslip/:id" element={<PrintPayslip />} />
