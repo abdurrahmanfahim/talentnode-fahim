@@ -1,3 +1,4 @@
+import { inngest } from "../inngest/index.js";
 import Employee from "../models/Employee.js";
 import LeaveApplication from "../models/LeaveApplication.js";
 
@@ -47,7 +48,12 @@ export const createLeave = async (req, res) => {
       status: "PENDING",
     });
 
-    await leave.save();
+    await inngest.send({
+      name: "leave/pending",
+      data: { leaveId: leave._id.toString() },
+    });
+
+    // await leave.save();
     return res.json({ success: true });
   } catch (error) {
     console.error("Failed to apply leave: ", error);
@@ -115,13 +121,17 @@ export const getLeave = async (req, res) => {
 // PATCH /api/v1/leave
 export const updateLeaveStatus = async (req, res) => {
   try {
-    const { status } = req.body
+    const { status } = req.body;
     if (!["PENDING", "APPROVED", "REJECTED"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const leave = await LeaveApplication.findByIdAndUpdate(req.params.id, { status }, { returnDocument: "after" })
-    return res.json({ success: true, data: leave })
+    const leave = await LeaveApplication.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { returnDocument: "after" },
+    );
+    return res.json({ success: true, data: leave });
   } catch (error) {
     console.error("Failed to update leave: ", error);
     return res
