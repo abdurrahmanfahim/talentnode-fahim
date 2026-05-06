@@ -90,7 +90,7 @@ const leaveApplicationReminder = inngest.createFunction(
       if (!employee) return;
 
       await sendEmail({
-        to: process.env.ADMIN_EMAIL,
+        to: process.env.INNGEST_ADMIN_EMAIL,
         subject: "Pending Leave Application Reminder",
         body: `<div style="max-width: 600px;">
           <h2>Hi Admin,</h2>
