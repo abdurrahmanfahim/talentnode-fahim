@@ -29,7 +29,7 @@ const LoginForm = ({ role, title, subtitle }) => {
     setLoading(true)
     setError('')
     try {
-      const res = await api.post('/auth/login', { ...data, role_type: role })
+      const res = await api.post('/auth/login', { ...data, role_type: role.toUpperCase() })
       login(res.data.user.role, res.data.user, res.data.token)
       navigate(role === 'admin' ? '/admin/dashboard' : '/employee/dashboard')
     } catch (err) {
